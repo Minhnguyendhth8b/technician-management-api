@@ -1,0 +1,17 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "memory"
+  },
+  "mongodb": {
+    "host": "localhost",
+    "port": 27017,
+    "url": "mongodb://localhost:27017/technician-management",
+    "database": "technician-management",
+    "password": "",
+    "name": "mongodb",
+    "user": "",
+    "connector": "mongodb",
+    "allowExtendedOperators": true
+  }
+}

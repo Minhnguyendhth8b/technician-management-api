@@ -1,0 +1,76 @@
+{
+  "name": "Member",
+  "plural": "members",
+  "base": "User",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "type": {
+      "type": [
+        "number"
+      ],
+      "required": true
+    },
+    "password": {
+      "type": "string",
+      "required": true
+    },
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "fullName": {
+      "type": "string"
+    },
+    "gender": {
+      "type": "number"
+    },
+    "dateOfBirth": {
+      "type": "date"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "avatar": {
+      "type": "object"
+    },
+    "lastLogin": {
+      "type": "date"
+    },
+    "lastPosition": {
+      "type": "object"
+    },
+    "device": {
+      "type": "object"
+    },
+    "socketId": {
+      "type": "string"
+    },
+    "created": {
+      "type": "date"
+    },
+    "modified": {
+      "type": "date"
+    },
+    "email": false
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
+}
