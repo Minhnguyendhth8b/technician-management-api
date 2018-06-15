@@ -39,8 +39,19 @@
     "dataSource": "mongodb",
     "public": true
   },
-  "Position": {
+  "Notification": {
     "dataSource": "mongodb",
-    "public": true
+    "public": true,
+    "options": {
+      "remoting": {
+        "sharedMethods": {
+          "*": false,
+          "create": true,
+          "find": true,
+          "seen": true,
+          "readNotification": true
+        }
+      }
+    }
   }
 }

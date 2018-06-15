@@ -50,6 +50,13 @@
     "socketId": {
       "type": "string"
     },
+    "isLogin": {
+      "type": "boolean",
+      "default": false
+    },
+    "lastAddress": {
+      "type": "string"
+    },
     "created": {
       "type": "date"
     },
@@ -70,6 +77,12 @@
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "findById"
     }
   ],
   "methods": {}

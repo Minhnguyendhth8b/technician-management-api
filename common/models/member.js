@@ -1,6 +1,7 @@
 'use strict';
-const async = require('async');
+const asyncCaoLan = require('async');
 const validator = require('validator');
+const app = require('../../server/server');
 
 const MEMBER_TYPES = {
     USER: 1,
@@ -63,41 +64,58 @@ module.exports = function(Member) {
             return next(new Error('Missing credentials'));
         }
 
-        const { username, password, longitude, latitude, socketId } = credentials;
-        if (!username || !password || !longitude || !latitude || !socketId) {
+        const { username, password, socketId } = credentials;
+        if (!username || !password || !socketId) {
             return next(new Error('Missing parameters'));
         }
 
         next();
     });
 
-    Member.afterRemote('login', async (ctx, modelInstant, next) => {
-        const { credentials } = ctx.args;
-        if (!credentials) {
-            return next(new Error('Missing credentials'));
-        }
+    Member.afterRemote('login', (ctx, modelInstant, next) => {        
+       const {
+         credentials
+       } = ctx.args;
+       if (!credentials) {
+         return next(new Error('Missing credentials'));
+       }
 
-        const { username, password, longitude, latitude, socketId } = credentials;
-        const { userId } = modelInstant;
-        if (!userId) {
-            return next(new Error('Something wrong'));
-        }
-
-        const user = await Member.findById(userId);
-        try {
-            const updatedUser = await user.updateAttributes({
+       const {
+         username,
+         password,
+         longitude,
+         latitude,
+         socketId
+       } = credentials;
+       const {
+         userId
+       } = modelInstant;
+       if (!userId) {
+         return next(new Error('Something wrong'));
+       }
+        Member.findById(userId, function (err, user) {
+            if (err || !user) return next(new Error('user not found')); 
+            if (user.type && user.type.indexOf(2) === -1) {
+                app.io.emit('staff-login', userId);
+            }
+            user.updateAttributes({
                 socketId: socketId,
-                lastPosition: {
-                    longitude: longitude,
-                    latitude: latitude
-                },
+                isLogin: true,
                 lastLogin: new Date()
-            });
-        } catch (e) {
-            return next(new Error(e));
-        }
+            }, next);
+        });
+    })
 
-        
+    Member.afterRemote('logout', (ctx, modelInstant, next) => {
+        if (ctx.req.accessToken && ctx.req.accessToken.userId) {
+            Member.findById(ctx.req.accessToken.userId, function (err, user) {
+                if (err || !user) next();
+                app.io.emit('user-logout', ctx.req.accessToken.userId);
+                user.updateAttributes({
+                    isLogin: false,
+                }, next);
+            })
+        }
     })
 
     Member.generateVerificationToken = () => {
@@ -108,16 +126,7 @@ module.exports = function(Member) {
       return text;
     };
 
-    Member.updatePosition = (options, next) => {
-        const { currentMember } = options;
-        if (!currentMember) {
-            return next(new Error('Permission denied'));
-        }
-
-        
-    }
-
-    Member.getAllStaffLocations = async (id, options, next) => {
+    Member.getAllStaffLocations = (id, options, next) => {
         const { currentMember } = options;
         if (!currentMember) {
             return next(new Error('Permission denied'));
@@ -127,29 +136,31 @@ module.exports = function(Member) {
         if (type.indexOf(MEMBER_TYPES.MANAGER) === -1) {
             return next(new Error('Permission denied'));
         }
-
-        const staffs = await Member.find({
-            where: {
-                and: [
-                    { type: 1 },
-                    {
-                        type: {
-                          nin: [2, 3]
-                        }
-                    }
-                ]
-            },
-            fields: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                lastPosition: true,
-                lastLogin: true,
-                modified: true
-            }
-        });
-
-        return next(null, staffs);
+        Member.find({
+         where: {
+           and: [{
+               type: 1
+             },
+             {
+               type: {
+                 nin: [2, 3]
+               }
+             }
+           ]
+         },
+         fields: {
+           id: true,
+           firstName: true,
+           lastName: true,
+            lastPosition: true,
+           isLogin: true,
+           lastLogin: true,
+           modified: true
+         }
+       }, function (err, staff) {
+           if (err) return next(err);
+           return next(null, staff);
+       });
     }
 
     Member.setup = () => {
