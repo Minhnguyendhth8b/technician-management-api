@@ -149,14 +149,15 @@ module.exports = function(Member) {
            ]
          },
          fields: {
-           id: true,
-           firstName: true,
-           lastName: true,
+            id: true,
+            firstName: true,
+            lastName: true,
             lastPosition: true,
-           isLogin: true,
-           lastLogin: true,
-           modified: true
-         }
+            isLogin: true,
+            lastLogin: true,
+            modified: true,
+            device: true,
+        }
        }, function (err, staff) {
            if (err) return next(err);
            return next(null, staff);

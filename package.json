@@ -8,9 +8,12 @@
   "scripts": {
     "lint": "eslint .",
     "start": "node .",
-    "posttest": "npm run lint && nsp check"
+    "posttest": "npm run lint && nsp check",
+    "build:sdk": "./node_modules/.bin/lb-sdk server/server ../react-native/map-view-dashboard/src/app/shared/sdk -d ng2web -i enabled"
   },
   "dependencies": {
+    "@mean-expert/loopback-component-realtime": "^1.0.0",
+    "@mean-expert/loopback-sdk-builder": "^2.3.1",
     "async": "^2.6.1",
     "compression": "^1.0.3",
     "cors": "^2.5.2",

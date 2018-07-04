@@ -21,7 +21,43 @@ module.exports = function(Notification) {
 
   Notification.observe('after save', (ctx, next) => {
     if (ctx.isNewInstance) {
-      Notification.push(ctx.instance, next);
+      if (typeof ctx.instance.type === 'string' && ctx.instance.type === 'all') {
+        Notification.app.models.Member.find({
+          where: {
+            username: {
+              neq: 'admin'
+            }
+          },
+          "fields": {
+            "device": true
+          }
+        }, function (err, devices) {
+          if (err) {
+            next();
+          } else {
+            const d = devices.filter(device => device.device && typeof device.device.registrationId === 'string' && device.device.registrationId !== '');
+            if (d && d.length) {
+              const q = async.queue(function (task, callback) {
+                Notification.push(task, callback);
+              }, 2);
+              const item = d.map(device => {
+                ctx.instance.device = device.device;
+                return ctx.instance;
+              }); 
+              q.push(item, function (err) {
+                console.log('finished processing notification');
+              })
+
+              q.drain = function () {
+                console.log('All notifications are pushed');
+              }
+            }
+            next();
+          }
+        })
+      } else {
+        Notification.push(ctx.instance, next);
+      }
     } else {
       next();
     }
@@ -35,6 +71,7 @@ module.exports = function(Notification) {
   };
 
   Notification.push = (item, callback) => {
+    console.log(item);
     if (item.device && item.device.registrationId) {
       let fcm = new FCM(app.get('firebase').serverKey);
       let message = {

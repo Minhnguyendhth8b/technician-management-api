@@ -33,6 +33,9 @@
       "type": "number",
       "required": true,
       "default": 0
+    },
+    "type": {
+      "type": "string"
     }
   },
   "validations": [],
