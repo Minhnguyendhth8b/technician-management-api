@@ -28,5 +28,9 @@ if (require.main === module) {
     socket.on('disconnect', function () {
       console.log('user disconnected');
     });
+
+    socket.on('staff-move', function (position) {
+      console.log('staff move', position);
+    })
   });
 }
