@@ -30,7 +30,7 @@ if (require.main === module) {
     });
 
     socket.on('staff-move', function (position) {
-      console.log('staff move', position);
+      app.io.emit('watch-staff-move', position);
     })
   });
 }
