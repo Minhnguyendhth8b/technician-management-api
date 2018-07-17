@@ -1,0 +1,33 @@
+{
+  "name": "Conversation",
+  "plural": "Conversations",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "participants": {
+      "type": [
+        "string"
+      ],
+      "required": true
+    },
+    "created": {
+      "type": "date"
+    },
+    "modified": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "messages": {
+      "type": "hasMany",
+      "model": "Message",
+      "foreignKey": "conversationId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

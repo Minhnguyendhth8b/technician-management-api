@@ -53,5 +53,13 @@
         }
       }
     }
+  },
+  "Conversation": {
+    "dataSource": "mongodb",
+    "public": true
+  },
+  "Message": {
+    "dataSource": "mongodb",
+    "public": false
   }
 }
