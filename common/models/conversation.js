@@ -2,8 +2,17 @@
 const async = require('async');
 module.exports = function(Conversation) {
 
-	Conversation.getRecentConversations = async (userId, next) => {
+	Conversation.getRecentConversations = async (options, next) => {
         try {
+            const {currentMember} = options;
+            if(!currentMember) {
+                return next(new Error('PERMISSION_DENIED'));
+            }
+
+            const userId = currentMember.id;
+            if(!userId || userId === '') {
+                return next(new Error('Acess Token is expired'));
+            }
             const user = await Conversation.app.models.Member.findById(userId);
             if(!user) {
                 return next(new Error('User not found'));
@@ -21,6 +30,13 @@ module.exports = function(Conversation) {
 	}
 
 	Conversation.setup = () => {
-
+        Conversation.remoteMethod('getRecentConversations', {
+            accepts: [
+                { arg: 'options', type: 'object', http: 'optionsFromRequest' }
+            ],
+            description: 'Get Location of all staffs',
+            http: { verb: 'GET', path: '/:id/recents' },
+            returns: { arg: 'data', type: 'object', root: true },
+        })
 	};
 };
