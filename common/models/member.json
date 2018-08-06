@@ -10,8 +10,7 @@
     "type": {
       "type": [
         "number"
-      ],
-      "required": true
+      ]
     },
     "password": {
       "type": "string",
@@ -29,11 +28,9 @@
     "gender": {
       "type": "number"
     },
-    "dateOfBirth": {
-      "type": "date"
-    },
     "phone": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "avatar": {
       "type": "object"
@@ -68,6 +65,12 @@
   "validations": [],
   "relations": {},
   "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "register"
+    },
     {
       "principalType": "ROLE",
       "principalId": "$everyone",

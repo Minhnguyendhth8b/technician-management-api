@@ -1,0 +1,98 @@
+{
+  "name": "PSC",
+  "plural": "PSCs",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "receiveNo": {
+      "type": "string",
+      "required": true
+    },
+    "warrantyNo": {
+      "type": "string"
+    },
+    "customerName": {
+      "type": "string",
+      "required": true
+    },
+    "customerAddress": {
+      "type": "string"
+    },
+    "customerPhoneNumber": {
+      "type": "string",
+      "required": true
+    },
+    "product": {
+      "type": "string",
+      "required": true,
+      "default": "staffId"
+    },
+    "productBrand": {
+      "type": "string",
+      "required": true,
+      "default": "staffId"
+    },
+    "productModel": {
+      "type": "string",
+      "required": true
+    },
+    "productSerial": {
+      "type": "string"
+    },
+    "productStatus": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "staffName": {
+      "type": "string",
+      "default": "null"
+    },
+    "type": {
+      "type": "string",
+      "required": true
+    },
+    "location": {
+      "type": "string",
+      "required": true
+    },
+    "fee": {
+      "type": "string"
+    },
+    "total": {
+      "type": "string"
+    },
+    "price": {
+      "type": "string"
+    },
+    "receiveDate": {
+      "type": "string"
+    },
+    "finishDate": {
+      "type": "string"
+    },
+    "deliveryDate": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "required": true
+    },
+    "created": {
+      "type": "date",
+      "default": "$now"
+    },
+    "modified": {
+      "type": "date",
+      "default": "$now"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

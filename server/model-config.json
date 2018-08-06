@@ -61,5 +61,13 @@
   "Message": {
     "dataSource": "mongodb",
     "public": false
+  },
+  "PSC": {
+    "dataSource": "mongodb",
+    "public": true
+  },
+  "Customer": {
+    "dataSource": "mongodb",
+    "public": true
   }
 }
