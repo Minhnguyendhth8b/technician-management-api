@@ -67,7 +67,7 @@ module.exports = function (Member) {
     const url = `http://api.phanmemsuachuabaohanh.com/api/Product/GetUser?usr=${credentials.usr}&psw=${credentials.pwd}&token=a83cbd127e616bcb63a4eb84e8c93643`
     request(url, function (error, response, body) {
       if (error) return callback(error);
-      if (response) {
+      if (body !== "null") {
         return callback(null, true);
       }
       return callback(null, false);
