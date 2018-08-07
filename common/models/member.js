@@ -47,7 +47,7 @@ module.exports = function (Member) {
 
   Member.register = (credentials, next) => {
     const { username, password, phone, socketId, lastPositions, firstName, lastName, device } = credentials;
-    if (!username || !password || !phone || !socketId || !lastPositions || !firstName || !lastName || !device) {
+    if (!username || !password || !socketId || !lastPositions || !firstName || !lastName || !device) {
       return next(new Error('Vui lòng nhập đầy đủ thông tin'));
    }
 
