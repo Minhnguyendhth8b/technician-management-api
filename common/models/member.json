@@ -29,8 +29,7 @@
       "type": "number"
     },
     "phone": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "avatar": {
       "type": "object"
