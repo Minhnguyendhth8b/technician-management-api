@@ -115,7 +115,7 @@ module.exports = function (Member) {
         data: {
           memberId: id,
           sentence: sentence,
-          psc: psc[0] ? psc[0] : null
+          psc: psc && psc.length && psc[0] ? psc[0] : null
         },
         device: device
       }, next);
