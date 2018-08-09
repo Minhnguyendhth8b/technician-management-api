@@ -26,7 +26,7 @@
     },
     "modified": {
       "type": "date"
-    },
+    }
   },
   "validations": [],
   "relations": {},
