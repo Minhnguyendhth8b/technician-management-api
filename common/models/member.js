@@ -48,8 +48,8 @@ module.exports = function (Member) {
   });
 
   Member.register = (credentials, next) => {
-    const { username, password, phone, socketId, lastPositions, firstName, lastName, device } = credentials;
-    if (!username || !password || !socketId || !lastPositions || !firstName || !lastName || !device) {
+    const { username, password, phone, socketId, lastPosition, firstName, lastName, device } = credentials;
+    if (!username || !password || !socketId || !lastPosition || !firstName || !lastName || !device) {
       return next(new Error('Vui lòng nhập đầy đủ thông tin'));
     }
 
