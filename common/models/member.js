@@ -69,6 +69,7 @@ module.exports = function (Member) {
       if (FullName && FullName !== '') credentials.fullName = FullName;
       if (UserId) credentials.userId = UserId;
       if (Phone && typeof Phone === 'string' && Phone !== '') credentials.phone = Phone;
+      credentials.type = [1];
       Member.create(credentials, next);
     })
   };
