@@ -62,7 +62,8 @@ module.exports = function (Member) {
       if (err) return next(err);
       if (!isExist) return next(new Error('Vui lòng đăng kí tài khoản trên trang quản trị trước khi sử dụng ứng dụng'));
       // Have the body in here
-      const { UserId, FullName, Phone, Email } = isExist;
+      const foundUser = JSON.parse(isExist);
+      const { UserId, FullName, Phone, Email } = foundUser;
       if(!UserId) return next(new Error('Vui lòng liên hệ với người quản trị để được đăng kí tài khoản sử dụng ứng dụng'));
       if (Email) credentials.email = Email;
       if (FullName && FullName !== '') credentials.fullName = FullName;
