@@ -69,5 +69,9 @@
   "Customer": {
     "dataSource": "mongodb",
     "public": true
+  },
+  "Branch": {
+    "dataSource": "mongodb",
+    "public": true
   }
 }
