@@ -15,6 +15,9 @@
       "type": "string",
       "required": true
     },
+    "location": {
+      "type": "object"
+    },
     "phone": {
       "type": "string"
     },
