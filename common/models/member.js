@@ -106,7 +106,7 @@ module.exports = function (Member) {
       // if(!psc) return next(new Error('Phiếu sửa chữa không tồn tại trong hệ thống'))
       const { device, fullName, id } = found;
       let sentence = `Bạn nhận được một điều phối sửa chữa mới với mã phiếu sửa chữa: ${pscId}`;
-      if(psc[0]) {
+      if(psc && psc.length && psc[0]) {
         const {Address, Phone, CustomerName} = psc[0];
         sentence = `Bạn nhận được một điều phối sửa chữa mới cho khách hàng ${CustomerName} - ${Phone} với địa chỉ: ${Address}`;
       }
