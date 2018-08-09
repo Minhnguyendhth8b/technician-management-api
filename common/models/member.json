@@ -59,7 +59,11 @@
     "modified": {
       "type": "date"
     },
-    "email": false
+    "email": false,
+    "userId": {
+      "type": "number",
+      "required": true
+    }
   },
   "validations": [],
   "relations": {},
@@ -69,6 +73,12 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": "register"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "dieuphoi"
     },
     {
       "principalType": "ROLE",

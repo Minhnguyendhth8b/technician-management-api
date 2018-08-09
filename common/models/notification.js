@@ -43,7 +43,7 @@ module.exports = function(Notification) {
               const item = d.map(device => {
                 ctx.instance.device = device.device;
                 return ctx.instance;
-              }); 
+              });
               q.push(item, function (err) {
                 console.log('finished processing notification');
               })
@@ -71,7 +71,6 @@ module.exports = function(Notification) {
   };
 
   Notification.push = (item, callback) => {
-    console.log(item);
     if (item.device && item.device.registrationId) {
       let fcm = new FCM(app.get('firebase').serverKey);
       let message = {

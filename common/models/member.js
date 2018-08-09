@@ -1,6 +1,7 @@
 'use strict';
 const app = require('../../server/server');
 const request = require('request');
+const async = require('async');
 
 const MEMBER_TYPES = {
   USER: 1,
@@ -12,6 +13,7 @@ const MALE = 1;
 const FEMALE = 2;
 const DEFAULT_SESSION_EXPIRED = 3600 * 999;
 const PATTERN_STRING = "0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
+const TOKEN = 'a83cbd127e616bcb63a4eb84e8c93643';
 
 module.exports = function (Member) {
 
@@ -49,7 +51,7 @@ module.exports = function (Member) {
     const { username, password, phone, socketId, lastPositions, firstName, lastName, device } = credentials;
     if (!username || !password || !socketId || !lastPositions || !firstName || !lastName || !device) {
       return next(new Error('Vui lòng nhập đầy đủ thông tin'));
-   }
+    }
 
     const c = {
       usr: username,
@@ -59,18 +61,62 @@ module.exports = function (Member) {
     verifyCredentials(c, function (err, isExist) {
       if (err) return next(err);
       if (!isExist) return next(new Error('Vui lòng đăng kí tài khoản trên trang quản trị trước khi sử dụng ứng dụng'));
+      // Have the body in here
+      const { UserId, FullName, Phone, Email } = isExist;
+      if(!UserId) return next(new Error('Vui lòng liên hệ với người quản trị để được đăng kí tài khoản sử dụng ứng dụng'));
+      if (Email) credentials.email = Email;
+      if (FullName && FullName !== '') credentials.fullName = FullName;
+      if (UserId) credentials.userId = UserId;
+      if (Phone && typeof Phone === 'string' && Phone !== '') credentials.phone = Phone;
       Member.create(credentials, next);
     })
   };
 
   function verifyCredentials(credentials, callback) {
-    const url = `http://api.phanmemsuachuabaohanh.com/api/Product/GetUser?usr=${credentials.usr}&psw=${credentials.pwd}&token=a83cbd127e616bcb63a4eb84e8c93643`
+    const url = `http://api.phanmemsuachuabaohanh.com/api/Product/GetUser?usr=${credentials.usr}&psw=${credentials.pwd}&token=${TOKEN}`
     request(url, function (error, response, body) {
       if (error) return callback(error);
       if (body !== "null") {
-        return callback(null, true);
+        return callback(null, body);
       }
       return callback(null, false);
+    })
+  }
+
+  function getRepairById(repairId, next) {
+    const url = `http://api.phanmemsuachuabaohanh.com/api/Product/Get?id=${repairId}&PageIndex=1&PageSize=50&token=${TOKEN}`;
+    request(url, function(err, response, body) {
+      if(err) return next(err);
+      return next(null, typeof body === 'object' && body.length > 0 ? body : null)
+    })
+  }
+
+  Member.dieuphoi = (userId, pscId, token, next) => {
+    if (token !== TOKEN) return next(new Error('Vui lòng nhập mã xác thực hợp lệ'));
+    const { Notification } = Member.app.models;
+    async.parallel([
+      (cb) => Member.findOne({where: {userId: userId}}, cb),
+      (cb) => getRepairById(pscId, cb)
+    ], (err, results) => {
+      if(err) return next(err);
+      const [found, psc] = results;
+      if(!found) return next(new Error('Kỹ thuật viên chưa đăng kí sử dụng ứng dụng'));
+      // if(!psc) return next(new Error('Phiếu sửa chữa không tồn tại trong hệ thống'))
+      const { device, fullName, id } = found;
+      let sentence = `Bạn nhận được một điều phối sửa chữa mới với mã phiếu sửa chữa: ${pscId}`;
+      if(psc[0]) {
+        const {Address, Phone, CustomerName} = psc[0];
+        sentence = `Bạn nhận được một điều phối sửa chữa mới cho khách hàng ${CustomerName} - ${Phone} với địa chỉ: ${Address}`;
+      }
+      Notification.create({
+        title: 'Một đơn điều phối mới ',
+        data: {
+          memberId: id,
+          sentence: sentence,
+          psc: psc[0] ? psc[0] : null
+        },
+        device: device
+      }, next);
     })
   }
 
@@ -201,6 +247,29 @@ module.exports = function (Member) {
       ],
       description: 'Register an account to use in this app',
       http: { verb: 'POST', path: '/register' },
+      returns: { arg: 'data', type: 'object', root: true },
+    });
+
+    Member.remoteMethod('dieuphoi', {
+      accepts: [
+        {
+          arg: 'userId', type: 'any',
+          description: 'User Id', required: true,
+          http: { source: 'query' }
+        },
+        {
+          arg: 'psc', type: 'any',
+          description: 'Phiếu sửa chữa', required: true,
+          http: { source: 'query' }
+        },
+        {
+          arg: 'token', type: 'string',
+          description: 'Mã xác thực', required: true,
+          http: { source: 'query' }
+        }
+      ],
+      description: 'Get Location of all staffs',
+      http: { verb: 'GET', path: '/dieuphoi' },
       returns: { arg: 'data', type: 'object', root: true },
     });
   };
