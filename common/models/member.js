@@ -161,7 +161,9 @@ module.exports = function (Member) {
       user.updateAttributes({
         socketId: socketId,
         isLogin: true,
-        lastLogin: new Date()
+        lastLogin: new Date(),
+        status: 'ONLINE',
+        lastActivity: new Date()
       }, next);
     });
   });
@@ -216,6 +218,8 @@ module.exports = function (Member) {
         isLogin: true,
         lastLogin: true,
         modified: true,
+        status: true,
+        lastActivity: true,
         device: true,
       }
     }, function (err, staff) {

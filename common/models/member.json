@@ -50,6 +50,12 @@
       "type": "boolean",
       "default": false
     },
+    "status": {
+      "type": "string"
+    },
+    "lastActivity": {
+      "type": "date"
+    },
     "lastAddress": {
       "type": "string"
     },

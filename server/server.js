@@ -19,14 +19,31 @@ app.start = function () {
 if (require.main === module) {
   //app.start();
   app.io = require('socket.io')(app.start());
+  const clients = {};
   app.io.on('connection', function (socket) {
-    console.log('a user connected');
     socket.on('chat message', function (msg) {
       console.log('message: ' + msg);
       app.io.emit('chat message', msg);
     });
     socket.on('disconnect', function () {
-      console.log('user disconnected');
+      console.log(socket.id);
+      app.models.Member.findOne({
+        where: {
+          socketId: socket.id
+        }
+      }, (err, found) => {
+        if(found) {
+          app.io.emit('user-disconnect', {
+            socketId: socket.id,
+            userId: found.id.toString(),
+            lastActivity: new Date()
+          })
+          found.updateAttributes({
+            lastActivity: new Date(),
+            status: 'OFFLINE'
+          }, () => {});
+        }
+      })
     });
 
     socket.on('staff-move', function (position) {
