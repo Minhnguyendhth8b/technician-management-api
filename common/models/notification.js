@@ -35,7 +35,17 @@ module.exports = function(Notification) {
           if (err) {
             next();
           } else {
-            const d = devices.filter(device => device.device && typeof device.device.registrationId === 'string' && device.device.registrationId !== '');
+            let d = [];
+            let listRegistrationIds = [];
+            if(devices && devices.length) {
+              for(let i = 0; i < devices.length; i++) {
+                if(device.device && typeof device.device.registrationId === 'string' && device.device.registrationId !== '' && listRegistrationIds.indexOf(device.device.registrationId) === -1) {
+                  d.push(device);
+                  listRegistrationIds.push(device.device.registrationId);
+                }
+              }
+            }
+            
             if (d && d.length) {
               const q = async.queue(function (task, callback) {
                 Notification.push(task, callback);
