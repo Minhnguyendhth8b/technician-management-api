@@ -39,13 +39,13 @@ module.exports = function(Notification) {
             let listRegistrationIds = [];
             if(devices && devices.length) {
               for(let i = 0; i < devices.length; i++) {
-                if(device.device && typeof device.device.registrationId === 'string' && device.device.registrationId !== '' && listRegistrationIds.indexOf(device.device.registrationId) === -1) {
-                  d.push(device);
-                  listRegistrationIds.push(device.device.registrationId);
+                if(devices[i].device && typeof devices[i].device.registrationId === 'string' && devices[i].device.registrationId !== '' && listRegistrationIds.indexOf(devices[i].device.registrationId) === -1) {
+                  d.push(devices[i]);
+                  listRegistrationIds.push(devices[i].device.registrationId);
                 }
               }
             }
-            
+
             if (d && d.length) {
               const q = async.queue(function (task, callback) {
                 Notification.push(task, callback);
