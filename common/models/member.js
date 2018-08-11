@@ -49,7 +49,7 @@ module.exports = function (Member) {
 
   Member.register = (credentials, next) => {
     const { username, password, phone, socketId, lastPosition, firstName, lastName, device } = credentials;
-    if (!username || !password || !socketId || !lastPosition || !firstName || !lastName || !device) {
+    if (!username || !password || !firstName || !lastName || !device) {
       return next(new Error('Vui lòng nhập đầy đủ thông tin'));
     }
 
@@ -157,6 +157,11 @@ module.exports = function (Member) {
       if (err || !user) return next(new Error('user not found'));
       if (user.type && user.type.indexOf(2) === -1) {
         app.io.emit('staff-login', userId);
+      } else {
+        app.io.emit('admin-change-location', {
+          userId: userId,
+          lastLocation: user.lastLocation
+        });
       }
       user.updateAttributes({
         socketId: socketId,
