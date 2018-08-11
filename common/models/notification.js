@@ -39,6 +39,9 @@ module.exports = function(Notification) {
             let listRegistrationIds = [];
             if(devices && devices.length) {
               for(let i = 0; i < devices.length; i++) {
+                console.log(devices[i].device.registrationId);
+                console.log(listRegistrationIds);
+                console.log(d);
                 if(devices[i].device && typeof devices[i].device.registrationId === 'string' && devices[i].device.registrationId !== '' && listRegistrationIds.indexOf(devices[i].device.registrationId) === -1) {
                   d.push(devices[i]);
                   listRegistrationIds.push(devices[i].device.registrationId);
