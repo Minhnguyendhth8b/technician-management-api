@@ -24,6 +24,10 @@
     "fax": {
       "type": "string"
     },
+    "clientId": {
+      "type": "number",
+      "required": true
+    },
     "created": {
       "type": "date"
     },
