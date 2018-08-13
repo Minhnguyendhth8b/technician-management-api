@@ -28,6 +28,9 @@
       "type": "number",
       "required": true
     },
+    "branchId": {
+      "type": "number"
+    },
     "created": {
       "type": "date"
     },
