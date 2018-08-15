@@ -170,7 +170,7 @@ module.exports = function(Notification) {
       html: `<h3>Khách hàng: ${name}</h3> <h3>Số điện thoại : ${phoneNumber}</h3> <h3>Email là: ${email}</h3>`
     };
 
-    transporter.sendMail(task.mailOptions, function(error, info){
+    transporter.sendMail(mailOptions, function(error, info){
       if (error) {
         return next(error);
       } else {
