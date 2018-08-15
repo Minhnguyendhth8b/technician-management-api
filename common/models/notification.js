@@ -170,27 +170,13 @@ module.exports = function(Notification) {
       html: `<h3>Khách hàng: ${name}</h3> <h3>Số điện thoại : ${phoneNumber}</h3> <h3>Email là: ${email}</h3>`
     };
 
-    var q = async.queue(function(task, callback) {
-      transporter.sendMail(task.mailOptions, function(error, info){
-        if (error) {
-          console.log(error);
-        } else {
-          console.log(info);
-        }
-      });
-        callback();
-    }, 2);
-
-    // assign a callback
-    q.drain = function() {
-        console.log('all items have been processed');
-    };
-
-    q.push({mailOptions: mailOptions}, function(err) {
-      console.log('Dang chay');''
-    })
-
-    return next(null, null);
+    transporter.sendMail(task.mailOptions, function(error, info){
+      if (error) {
+        return next(error);
+      } else {
+        return next(null, info);
+      }
+    });
   }
 
   Notification.setup = () => {
