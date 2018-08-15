@@ -25,5 +25,6 @@
   "allowExtendedOperators": true,
   "firebase": {
     "serverKey": "AAAAf_mspfg:APA91bGU_ZMn7Cgl2bseoBQTF67F7pnVBVPw-HtjKVi_UVdjblvtULHTSOzLxCC53Ye0-tRrdWsttz4Pd9tCFic-Sw1_Vj9W_oAFhky3da0agZxrzPH2b9Ncrpnl_a5vUSJPZG0nWxG3"
-  }
+  },
+  "email": "truongdat.cn@gmail.com"
 }
