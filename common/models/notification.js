@@ -3,6 +3,7 @@
 const async = require('async');
 const FCM = require('fcm-push');
 const app = require('../../server/server');
+const nodemailer = require('nodemailer');
 const NOTIFICATION_DEVICE_OS_IOS = 'iOS';
 const NOTIFICATION_DEVICE_OS_ANDROID = 'Android';
 const NOTIFICATION_DEVICE_OS = [NOTIFICATION_DEVICE_OS_IOS, NOTIFICATION_DEVICE_OS_ANDROID];
@@ -132,6 +133,66 @@ module.exports = function(Notification) {
     });
   };
 
+  Notification.getAllNotifications = (options, next) => {
+    const {currentMember} = options;
+    if(!currentMember) return next(new Error('AUTHORIZATION_REQUIRED'));
+
+    const {id} = currentMember;
+    Notification.find({
+      where: {
+        or: [
+          {
+            "data.memberId": id.toString()
+          },
+          {
+            type: 'all'
+          }
+        ]
+      },
+      order: 'modified DESC',
+      limit: 30
+    }, next);
+  }
+
+  Notification.sendEmail = (name, phoneNumber, email, web, project, next) => {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'minhnguyendhth11b@gmail.com',
+        pass: 'nguyenhoangminh'
+      }
+    });
+
+    const mailOptions = {
+      from: 'youremail@gmail.com',
+      to: app.get('email'),
+      subject: 'Mày vừa nhận được một lần điền form từ dự án ' + project,
+      html: `<h3>Khách hàng: ${name}</h3> <h3>Số điện thoại : ${phoneNumber}</h3> <h3>Email là: ${email}</h3>`
+    };
+
+    var q = async.queue(function(task, callback) {
+      transporter.sendMail(task.mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log(info);
+        }
+      });
+        callback();
+    }, 2);
+
+    // assign a callback
+    q.drain = function() {
+        console.log('all items have been processed');
+    };
+
+    q.push({mailOptions: mailOptions}, function(err) {
+      console.log('Dang chay');''
+    })
+
+    return next(null, null);
+  }
+
   Notification.setup = () => {
     Notification.remoteMethod(
       'seen',
@@ -147,6 +208,19 @@ module.exports = function(Notification) {
     );
 
     Notification.remoteMethod(
+      'getAllNotifications',
+      {
+        accessType: 'WRITE',
+        accepts: [
+          {arg: 'options', type: 'object', http: 'optionsFromRequest'},
+        ],
+        description: 'Get all notifications',
+        http: {verb: 'GET', path: '/all'},
+        returns: {arg: 'data', type: 'object', root: true},
+      }
+    );
+
+    Notification.remoteMethod(
       'readNotification',
       {
         accessType: 'WRITE',
@@ -156,6 +230,23 @@ module.exports = function(Notification) {
         ],
         description: 'User read single notification',
         http: {verb: 'PUT', path: '/:id/seen'},
+        returns: {arg: 'data', type: 'object', root: true},
+      }
+    );
+
+    Notification.remoteMethod(
+      'sendEmail',
+      {
+        accessType: 'WRITE',
+        accepts: [
+          {arg: 'name', type: 'string', required: true},
+          {arg: 'phoneNumber', type: 'string', required: false},
+          {arg: 'email', type: 'string', required: false},
+          {arg: 'web', type: 'string', required: false},
+          {arg: 'project', type: 'string', required: false},
+        ],
+        description: 'User read single notification',
+        http: {verb: 'GET', path: '/sendEmail'},
         returns: {arg: 'data', type: 'object', root: true},
       }
     );

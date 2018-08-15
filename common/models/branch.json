@@ -31,6 +31,9 @@
     "branchId": {
       "type": "number"
     },
+    "placeId": {
+      "type": "string"
+    },
     "created": {
       "type": "date"
     },

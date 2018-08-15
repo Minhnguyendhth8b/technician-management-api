@@ -16,10 +16,16 @@ module.exports = function(Branch) {
   Branch.observe('before save', function(ctx, next) {
     if(ctx.isNewInstance) {
       geocoder.geocode(ctx.instance.address, function(err, res) {
-        ctx.instance.location = {
-          latitude: res[0].latitude,
-          longitude: res[0].longitude,
-        };
+        if(res[0]) {
+          ctx.instance.location = {
+            latitude: res[0].latitude,
+            longitude: res[0].longitude,
+          };
+
+          if(res[0].extra && typeof res[0].extra.googlePlaceId === 'string' && res[0].extra.googlePlaceId !== '') {
+            ctx.instance.placeId = res[0].extra.googlePlaceId;
+          }
+        }
 
         next();
       })

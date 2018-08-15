@@ -49,7 +49,8 @@
           "create": true,
           "find": true,
           "seen": true,
-          "readNotification": true
+          "readNotification": true,
+          "sendEmail": true
         }
       }
     }
