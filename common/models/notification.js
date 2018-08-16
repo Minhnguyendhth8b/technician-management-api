@@ -41,12 +41,13 @@ module.exports = function(Notification) {
           } else {
             let d = [];
             let listRegistrationIds = [];
+            const instance = ctx.instance;
             if(devices && devices.length) {
               for(let i = 0; i < devices.length; i++) {
                 if(devices[i].device && typeof devices[i].device.registrationId === 'string'
                 && devices[i].device.registrationId !== '' && listRegistrationIds.indexOf(devices[i].device.registrationId) === -1) {
-
-                  d.push({...ctx.instance, ...devices[i]});
+                  instance.device = devices[i].device;
+                  d.push(instance);
                   listRegistrationIds.push(devices[i].device.registrationId);
                 }
               }
@@ -58,12 +59,8 @@ module.exports = function(Notification) {
               const q = async.queue(function (task, callback) {
                 Notification.push(task, callback);
               }, 2);
-              // const item = d.map(device => {
-              //   ctx.instance.device = device.device;
-              //   return ctx.instance;
-              // });
               console.log(item);
-              q.push(item, function (err) {
+              q.push(d, function (err) {
                 console.log('finished processing notification');
               })
 
