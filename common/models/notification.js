@@ -16,6 +16,9 @@ module.exports = function(Notification) {
       ctx.instance.modified = new Date();
     } else {
       ctx.data.modified = new Date();
+      if(ctx.data.data && typeof ctx.data.data.memberId !== 'undefined') {
+        ctx.data.receiver = ctx.data.data.memberId;
+      }
     }
     next();
   });
@@ -40,14 +43,13 @@ module.exports = function(Notification) {
             let listRegistrationIds = [];
             if(devices && devices.length) {
               for(let i = 0; i < devices.length; i++) {
-                console.log(devices[i].device.registrationId);
-                console.log(listRegistrationIds);
-                console.log(d);
-                if(devices[i].device && typeof devices[i].device.registrationId === 'string' && devices[i].device.registrationId !== '' && listRegistrationIds.indexOf(devices[i].device.registrationId) === -1) {
+                if(devices[i].device && typeof devices[i].device.registrationId === 'string'
+                && devices[i].device.registrationId !== '' && listRegistrationIds.indexOf(devices[i].device.registrationId) === -1) {
                   d.push(devices[i]);
                   listRegistrationIds.push(devices[i].device.registrationId);
                 }
               }
+              console.log(listRegistrationIds);
             }
 
             if (d && d.length) {
@@ -83,6 +85,17 @@ module.exports = function(Notification) {
       receiver: currentMember.id.toString(),
     }, {status: 1}, next);
   };
+
+  Notification.countUnreadMessages = (options, next) => {
+    const {currentMember} = options;
+    if(!currentMember) return next(new Error('AUTHORIZATION_REQUIRED'));
+    const NotificationCollection = Notification.getDataSource().connector.collection(Notification.modelName);
+    const {id} = currentMember;
+    NotificationCollection.count({
+    	"status": 0,
+    	"data.memberId": id.toString()
+    }, next);
+  }
 
   Notification.push = (item, callback) => {
     if (item.device && item.device.registrationId) {
@@ -127,6 +140,7 @@ module.exports = function(Notification) {
       if (err || !notification) {
         return next(new Error('Notification not found'));
       }
+      const {type, listRead} = notification;
       notification.updateAttributes({
         status: 1,
       }, next);
@@ -236,6 +250,19 @@ module.exports = function(Notification) {
         returns: {arg: 'data', type: 'object', root: true},
       }
     );
+
+    Notification.remoteMethod(
+      'countUnreadMessages',
+      {
+        accessType: 'READ',
+        accepts: [
+          {arg: 'options', type: 'object', http: 'optionsFromRequest'},
+        ],
+        description: 'Count Unread message',
+        http: {verb: 'GET', path: '/unread'},
+        returns: {arg: 'data', type: 'object', root: true}
+      }
+    )
   };
   Notification.setup();
 };

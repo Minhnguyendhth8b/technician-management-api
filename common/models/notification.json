@@ -22,12 +22,20 @@
         "sentence": ""
       }
     },
+    "receiver": {
+      "type": "string"
+    },
     "device": {
       "type": "object",
       "default": {
         "id": "",
         "os": ""
       }
+    },
+    "listRead": {
+      "type": [
+        "string"
+      ]
     },
     "status": {
       "type": "number",
@@ -82,6 +90,12 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": "getAllNotifications"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "countUnreadMessages"
     }
   ],
   "methods": {}

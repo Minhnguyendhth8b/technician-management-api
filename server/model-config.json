@@ -50,7 +50,8 @@
           "find": true,
           "seen": true,
           "readNotification": true,
-          "sendEmail": true
+          "sendEmail": true,
+          "countUnreadMessages": true
         }
       }
     }
