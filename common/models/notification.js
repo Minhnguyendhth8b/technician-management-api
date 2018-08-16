@@ -50,6 +50,7 @@ module.exports = function(Notification) {
                 }
               }
               console.log(listRegistrationIds);
+              console.log(d);
             }
 
             if (d && d.length) {
@@ -60,6 +61,7 @@ module.exports = function(Notification) {
                 ctx.instance.device = device.device;
                 return ctx.instance;
               });
+              console.log(item);
               q.push(item, function (err) {
                 console.log('finished processing notification');
               })
