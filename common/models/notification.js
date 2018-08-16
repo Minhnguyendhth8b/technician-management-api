@@ -46,8 +46,7 @@ module.exports = function(Notification) {
               for(let i = 0; i < devices.length; i++) {
                 if(devices[i].device && typeof devices[i].device.registrationId === 'string'
                 && devices[i].device.registrationId !== '' && listRegistrationIds.indexOf(devices[i].device.registrationId) === -1) {
-                  const device = devices[i];
-                  d.push(Object.assign(instance, device));
+                  d.push(devices[i]);
                   listRegistrationIds.push(devices[i].device.registrationId);
                 }
               }
@@ -59,7 +58,12 @@ module.exports = function(Notification) {
               const q = async.queue(function (task, callback) {
                 Notification.push(task, callback);
               }, 2);
-              q.push(d, function (err) {
+              let results = [];
+              for(var i = 0; i <= d.length; d++) {
+                instance.device = d[i].device;
+                results.push(instance);
+              }
+              q.push(results, function (err) {
                 console.log('finished processing notification');
               })
 
