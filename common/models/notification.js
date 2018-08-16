@@ -46,8 +46,8 @@ module.exports = function(Notification) {
               for(let i = 0; i < devices.length; i++) {
                 if(devices[i].device && typeof devices[i].device.registrationId === 'string'
                 && devices[i].device.registrationId !== '' && listRegistrationIds.indexOf(devices[i].device.registrationId) === -1) {
-                  instance.device = devices[i].device;
-                  d.push(instance);
+                  const device = devices[i];
+                  d.push(Object.assign(instance, device));
                   listRegistrationIds.push(devices[i].device.registrationId);
                 }
               }
@@ -59,7 +59,6 @@ module.exports = function(Notification) {
               const q = async.queue(function (task, callback) {
                 Notification.push(task, callback);
               }, 2);
-              console.log(item);
               q.push(d, function (err) {
                 console.log('finished processing notification');
               })
