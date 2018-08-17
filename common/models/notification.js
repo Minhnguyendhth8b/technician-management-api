@@ -74,7 +74,7 @@ module.exports = function(Notification) {
         })
       } else {
         async.parallel([
-          (cb) => Notification.app.models.findById(ctx.instance.data.memberId, cb),
+          (cb) => Notification.app.models.Member.findById(ctx.instance.data.memberId, cb),
           (cb) => Notification.push(ctx.instance, cb),
         ], (err, results) => {
           if(err) {
@@ -84,6 +84,7 @@ module.exports = function(Notification) {
             const { socketId } = foundMember;
             app.io.to(socketId).emit('on-notification', ctx.instance);
           }
+          next();
         });
       }
     } else {
