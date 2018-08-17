@@ -75,7 +75,7 @@ module.exports = function(Notification) {
       } else {
         async.parallel([
           (cb) => Notification.app.models.findById(ctx.instance.data.memberId, cb),
-          (cb) => Notification.push(ctx.instance, cb);
+          (cb) => Notification.push(ctx.instance, cb),
         ], (err, results) => {
           if(err) {
             console.log(err);
