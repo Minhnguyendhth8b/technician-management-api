@@ -50,8 +50,6 @@ module.exports = function(Notification) {
                   listRegistrationIds.push(devices[i].device.registrationId);
                 }
               }
-              console.log(listRegistrationIds);
-              console.log(d);
             }
 
             if (d && d.length) {
@@ -75,7 +73,18 @@ module.exports = function(Notification) {
           }
         })
       } else {
-        Notification.push(ctx.instance, next);
+        async.parallel([
+          (cb) => Notification.app.models.findById(ctx.instance.data.memberId, cb),
+          (cb) => Notification.push(ctx.instance, cb);
+        ], (err, results) => {
+          if(err) {
+            console.log(err);
+          } else {
+            const [foundMember, push] = results;
+            const { socketId } = foundMember;
+            app.io.to(socketId).emit('on-notification', ctx.instance);
+          }
+        });
       }
     } else {
       next();
@@ -125,10 +134,8 @@ module.exports = function(Notification) {
         default:
           fcm.send(message, (err, response) => {
             if (err) {
-              console.log(err);
               callback();
             } else {
-              console.log(response);
               callback();
             }
           });
