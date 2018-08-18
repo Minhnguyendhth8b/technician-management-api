@@ -93,10 +93,15 @@ module.exports = function(Notification) {
   });
 
   Notification.seen = (options, next) => {
-    const {currentMember, currentStore} = options;
+    const {currentMember} = options;
+    console.log(currentMember.id);
     Notification.updateAll({
       "data.memberId": currentMember.id.toString()
-    }, {status: 1}, next);
+    }, {status: 1}, (err, notifications) => {
+      if(err) return next(err);
+      console.log(notifications);
+      return next(null, notifications);
+    });
   };
 
   Notification.countUnreadMessages = (options, next) => {
