@@ -31,4 +31,25 @@ module.exports = function(Branch) {
       })
     }
   })
+
+  Branch.getGeoCodeByAddress = (address, next) => {
+    geocoder.geocode(address, next);
+  }
+
+  Branch.setup = () => {
+    Branch.remoteMethod(
+      'getGeoCodeByAddress',
+      {
+        accessType: 'READ',
+        accepts: [
+          {arg: 'address', type: 'string', 'required': true},
+        ],
+        description: 'Count Unread message',
+        http: {verb: 'GET', path: '/address'},
+        returns: {arg: 'data', type: 'object', root: true}
+      }
+    )
+  }
+
+  Branch.setup();
 };
