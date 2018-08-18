@@ -12,11 +12,19 @@ module.exports = function(Notification) {
   Notification.prefixError = 'NOT_';
 
   Notification.observe('before save', function(ctx, next) {
+    if (ctx.isNewInstance) {
+      if(ctx.instance) {
+        ctx.instance.created = new Date();
+      } else {
+        ctx.data.created = new Date();
+      }
+    }
+
+    
     if (ctx.instance) {
       ctx.instance.modified = new Date();
     } else {
       ctx.data.modified = new Date();
-      ctx.data.created = new Date();
       if(ctx.data.data && typeof ctx.data.data.memberId !== 'undefined') {
         ctx.data.receiver = ctx.data.data.memberId;
       }
