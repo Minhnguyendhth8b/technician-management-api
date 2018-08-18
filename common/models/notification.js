@@ -95,7 +95,7 @@ module.exports = function(Notification) {
   Notification.seen = (options, next) => {
     const {currentMember, currentStore} = options;
     Notification.updateAll({
-      receiver: currentMember.id.toString(),
+      "data.memberId": currentMember.id.toString()
     }, {status: 1}, next);
   };
 
