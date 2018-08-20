@@ -33,7 +33,7 @@ module.exports = function(Branch) {
   })
 
   Branch.getGeoCodeByAddress = (address, next) => {
-    geocoder.geocode(address, next);
+    geocoder.batchGeocode(address.split(';'), next);
   }
 
   Branch.setup = () => {
@@ -42,7 +42,7 @@ module.exports = function(Branch) {
       {
         accessType: 'READ',
         accepts: [
-          {arg: 'address', type: 'string', 'required': true},
+          {arg: 'address', type: 'any', 'required': true},
         ],
         description: 'Count Unread message',
         http: {verb: 'GET', path: '/address'},

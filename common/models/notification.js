@@ -20,7 +20,7 @@ module.exports = function(Notification) {
       }
     }
 
-    
+
     if (ctx.instance) {
       ctx.instance.modified = new Date();
     } else {
@@ -141,6 +141,7 @@ module.exports = function(Notification) {
       message.notification.body = item.data.sentence;
       message.notification.title = item.title;
       message.data = item.data;
+      message.priority = 'high';
       switch (item.device.os) {
         case 'Android':
         case 'iOS':
